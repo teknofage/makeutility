@@ -16,7 +16,7 @@ type article struct {
 	Title 		string	`json:"title"`
 	URL 		string	`json:"URL"`
 	Score 		string 	`json:"score"`
-	Comments 	string 	`json:"score"`
+	Comments 	string 	`json:"comments"`
 	Poster 		string	`json:"poster"`
 }
 
@@ -37,18 +37,25 @@ func main() {
 					title := h.ChildText("td.title > a") 
 					score := h.ChildText("td.subtext > span.score")
 					comments := h.ChildText("td.subtext > a:last-child")
+					fmt.Println("One")
+					// fmt.Println(articles[0])
 					if title == "More" {
 						c.Visit("news.ycombinator.com/" + h.ChildAttr("td.title > a", "href"))
+						fmt.Println("Two")
+						fmt.Println(articles[0])
 					} else if score != "" {
 						articles[i].Score = score
-						articles[i].Comments = h.ChildText("td.subtext > a:last-child")
+						articles[i].Comments = comments
 						articles[i].Poster = h.ChildText("td.subtext > a.hnuser")
+						fmt.Println("Three")
+						fmt.Println(articles[0])
 						i++
 					} else if title != "" {
-						
 						art.Title = title
 						art.URL = h.ChildAttr("td.title > a", "href")
 						articles = append(articles, art)
+						fmt.Println("Four")
+						fmt.Println(articles[0])
 					}
 					
 				})
@@ -75,8 +82,9 @@ func main() {
 }
 
 
-
 func writeJSONToFile(articleJSONString string) error {
+	// fmt.Println("Five")
+	// fmt.Println(articleJSONString)
     file, err := os.Create("output.json")
     if err != nil {
         return err
@@ -89,3 +97,8 @@ func writeJSONToFile(articleJSONString string) error {
     }
     return file.Sync()
 }
+
+func comparePointsComments(articleJSONString string) error {
+	forEach(articles) {
+
+	}
