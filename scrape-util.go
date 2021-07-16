@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"encoding/json"
 	// "io/ioutil"
+	"strings"
 	"os"
 	"io"
 
@@ -16,8 +17,11 @@ type article struct {
 	Title 		string	`json:"title"`
 	URL 		string	`json:"URL"`
 	Score 		string 	`json:"score"`
+	ScoreNum 	string	`json:"scoreNum"`
 	Comments 	string 	`json:"comments"`
+	CommentsNum string	`json:"commentsNum"`
 	Poster 		string	`json:"poster"`
+	
 }
 
 func main() {
@@ -36,7 +40,9 @@ func main() {
 					var art article
 					title := h.ChildText("td.title > a") 
 					score := h.ChildText("td.subtext > span.score")
+					scoreNum := strings.TrimRight(score, " points")
 					comments := h.ChildText("td.subtext > a:last-child")
+					commentsNum := strings.TrimRight(comments, " comments")
 					fmt.Println("One")
 					// fmt.Println(articles[0])
 					if title == "More" {
@@ -45,7 +51,9 @@ func main() {
 						fmt.Println(articles[0])
 					} else if score != "" {
 						articles[i].Score = score
+						articles[i].ScoreNum = scoreNum
 						articles[i].Comments = comments
+						articles[i].CommentsNum = commentsNum
 						articles[i].Poster = h.ChildText("td.subtext > a.hnuser")
 						fmt.Println("Three")
 						fmt.Println(articles[0])
@@ -98,7 +106,8 @@ func writeJSONToFile(articleJSONString string) error {
     return file.Sync()
 }
 
-func comparePointsComments(articleJSONString string) error {
-	forEach(articles) {
+// func comparePointsComments(articleJSONString string) error {
+// 	forEach(articles) {
 
-	}
+// 	}
+// }
