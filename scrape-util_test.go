@@ -5,13 +5,13 @@ import (
 )
 
 func TestCommentType(t *testing.T) {
-    if commentNum != 4 {
+    if commentNum != type int {
         t.Error("Expected that to be a integer!")
     }
 }
 
 func TestScoreType(t *testing.T) {
-    if scoreNum != 4 {
+    if scoreNum != type int {
         t.Error("Expected that to be a integer!")
     }
 }

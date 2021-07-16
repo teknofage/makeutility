@@ -32,6 +32,7 @@ type ranking struct {
 
 func main() {
 	var articles []article
+	var rankings []ranking
 	var pageCount int
 	i := 0
 	
@@ -44,7 +45,7 @@ func main() {
 	c.OnHTML(cssSelector, func(e *colly.HTMLElement) {
 				e.ForEach("tr", func(_ int, h *colly.HTMLElement) {
 					var art article
-					// var rank ranking
+					var rank ranking
 					title := h.ChildText("td.title > a") 
 					score := h.ChildText("td.subtext > span.score")
 					
@@ -58,7 +59,8 @@ func main() {
 					comments := h.ChildText("td.subtext > a:last-child")
 					fmt.Println(comments)
 					commentsNum := strings.TrimRight(comments, " comments")
-					commentsNum = strings.Trim(commentsNum, " ")
+					// commentsNum = strings.Trim(commentsNum, " ")
+					commentsNum = strings.TrimSpace(commentsNum)
 					fmt.Println("Comments Num: ")
 					fmt.Println(commentsNum)
 					commentsInt, err := strconv.Atoi(commentsNum)
@@ -98,7 +100,7 @@ func main() {
 						art.URL = h.ChildAttr("td.title > a", "href")
 						articles = append(articles, art)
 
-						// rank.CurrentRank
+						// rank.CurrentRank = 
 						// fmt.Println("Four")
 						// fmt.Println(articles[0])
 					}
