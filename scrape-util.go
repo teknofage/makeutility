@@ -1,13 +1,14 @@
 package main
 
 import (
-	"fmt"
 	"encoding/json"
-	// "io/ioutil"
-	"strings"
-	"os"
-	"io"
+	"fmt"
 
+	// "io/ioutil"
+	"io"
+	"os"
+	"strconv"
+	"strings"
 
 	"github.com/gocolly/colly"
 )
@@ -17,11 +18,16 @@ type article struct {
 	Title 		string	`json:"title"`
 	URL 		string	`json:"URL"`
 	Score 		string 	`json:"score"`
-	ScoreNum 	string	`json:"scoreNum"`
+	ScoreNum	string	`json:"scoreNum"`
 	Comments 	string 	`json:"comments"`
 	CommentsNum string	`json:"commentsNum"`
 	Poster 		string	`json:"poster"`
 	
+}
+
+type ranking struct {
+	CurrentRank 		int	`json:"currentRank"`
+	URL 				string	`json:"URL"`
 }
 
 func main() {
@@ -38,32 +44,63 @@ func main() {
 	c.OnHTML(cssSelector, func(e *colly.HTMLElement) {
 				e.ForEach("tr", func(_ int, h *colly.HTMLElement) {
 					var art article
+					// var rank ranking
 					title := h.ChildText("td.title > a") 
 					score := h.ChildText("td.subtext > span.score")
+					
 					scoreNum := strings.TrimRight(score, " points")
+					scoreInt, err := strconv.Atoi(scoreNum)
+					if err == nil {
+							fmt.Println("Score Int: ")
+							fmt.Println(scoreInt)
+					}
+
 					comments := h.ChildText("td.subtext > a:last-child")
+					fmt.Println(comments)
 					commentsNum := strings.TrimRight(comments, " comments")
-					fmt.Println("One")
+					commentsNum = strings.Trim(commentsNum, " ")
+					fmt.Println("Comments Num: ")
+					fmt.Println(commentsNum)
+					commentsInt, err := strconv.Atoi(commentsNum)
+					// fmt.Println("Comments Int: ")
+					// temp := strconv.Itoa(int(commentsInt))
+					// fmt.Println(temp)
+					// fmt.Println(strconv.Itoa(int(420)))
+					if err == nil {
+							fmt.Println("Comments Int: ")
+							fmt.Println(strconv.Itoa(commentsInt))
+					}
+					
+					currentRank := (scoreInt + 1) * (commentsInt + 1)
+					fmt.Println("Current Rank: ")
+					fmt.Println(currentRank)
+
+					
+					// currentRank := 
+					// fmt.Println("One")
 					// fmt.Println(articles[0])
 					if title == "More" {
 						c.Visit("news.ycombinator.com/" + h.ChildAttr("td.title > a", "href"))
-						fmt.Println("Two")
-						fmt.Println(articles[0])
+						// fmt.Println("Two")
+						// fmt.Println(articles[0])
 					} else if score != "" {
 						articles[i].Score = score
 						articles[i].ScoreNum = scoreNum
 						articles[i].Comments = comments
 						articles[i].CommentsNum = commentsNum
 						articles[i].Poster = h.ChildText("td.subtext > a.hnuser")
-						fmt.Println("Three")
-						fmt.Println(articles[0])
+						
+						// fmt.Println("Three")
+						// fmt.Println(articles[0])
 						i++
 					} else if title != "" {
 						art.Title = title
 						art.URL = h.ChildAttr("td.title > a", "href")
 						articles = append(articles, art)
-						fmt.Println("Four")
-						fmt.Println(articles[0])
+
+						// rank.CurrentRank
+						// fmt.Println("Four")
+						// fmt.Println(articles[0])
 					}
 					
 				})
@@ -104,8 +141,24 @@ func writeJSONToFile(articleJSONString string) error {
         return err
     }
     return file.Sync()
-}
 
+	
+}
+func scoreJSONToFile(scoreJSONString string) error {
+
+	file, err := os.Create("score.json")
+		if err != nil {
+			return err
+		}
+		defer file.Close()
+
+		_, err = io.WriteString(file, scoreJSONString)
+		if err != nil {
+			return err
+		}
+		return file.Sync()
+
+}
 // func comparePointsComments(articleJSONString string) error {
 // 	forEach(articles) {
 

@@ -1,4 +1,4 @@
-module github.com/make-school-labs/makescraper
+module github.com/teknofage/makeutility
 
 go 1.13
 
