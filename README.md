@@ -58,3 +58,17 @@ Rubric is viewable on [Gradescope](https://www.gradescope.com/courses/86046/assi
 ## Code Review and Feedback
 
 _Instructor feedback will appear in this space._
+
+***Installation Instructions***
+
+- Clone this repository
+
+- Navigate to the root directory
+
+- type in the command line: 
+```
+$ go run scrape-util.go
+```
+Examine the output printed to the output.json file.
+
+See how the articles are reordered and printed to the ranking.go file, based on their combined points and comments.

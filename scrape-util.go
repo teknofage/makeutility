@@ -59,7 +59,6 @@ func main() {
 					comments := h.ChildText("td.subtext > a:last-child")
 					fmt.Println(comments)
 					commentsNum := strings.TrimRight(comments, " comments")
-					// commentsNum = strings.Trim(commentsNum, " ")
 					commentsNum = strings.TrimSpace(commentsNum)
 					fmt.Println("Comments Num: ")
 					fmt.Println(commentsNum)
@@ -100,9 +99,11 @@ func main() {
 						art.URL = h.ChildAttr("td.title > a", "href")
 						articles = append(articles, art)
 
-						// rank.CurrentRank = 
-						// fmt.Println("Four")
-						// fmt.Println(articles[0])
+						rank.CurrentRank = currentRank
+						rank.URL = h.ChildAttr("td.title > a", "href")
+						rankings = append(rankings, rank)
+						fmt.Println("Rankings")
+						fmt.Println(rankings)
 					}
 					
 				})
@@ -126,6 +127,12 @@ func main() {
 	articleJSONString := string(articleJSON)
 	// fmt.Println(articleJSONString)
 	writeJSONToFile(articleJSONString)
+
+	rankingJSON, _ := json.Marshal(rankings)
+	// fmt.Println(string(articleJSON))
+	rankingJSONString := string(rankingJSON)
+	// fmt.Println(articleJSONString)
+	scoreJSONToFile(rankingJSONString)
 }
 
 
@@ -146,15 +153,15 @@ func writeJSONToFile(articleJSONString string) error {
 
 	
 }
-func scoreJSONToFile(scoreJSONString string) error {
+func scoreJSONToFile(rankingJSONString string) error {
 
-	file, err := os.Create("score.json")
+	file, err := os.Create("ranking.json")
 		if err != nil {
 			return err
 		}
 		defer file.Close()
 
-		_, err = io.WriteString(file, scoreJSONString)
+		_, err = io.WriteString(file, rankingJSONString)
 		if err != nil {
 			return err
 		}
